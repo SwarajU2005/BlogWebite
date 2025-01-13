@@ -1,17 +1,33 @@
 import { Box, TextField, Button, Typography } from '@mui/material';
 import { useState } from 'react';
 import LogoImage from '../Images/image.png';
+import { signupUser } from '../../../../server/controller/usercontroller';
+
+const signupInitialValues = {
+  name:'',
+  username:'',
+  password:''
+}
 
 const Login = () => {
   const url = 'https://www.sesta.it/wp-content/uploads/2021/03/logo-blog-sesta-trasparente.png';
 
   const [account , toggleaccount] = useState('login');
+  const[signup, setSignup] = useState(signupInitialValues);
 
   const toggleSignup = () => {
     account==='login'?
     toggleaccount('signup')
     :
     toggleaccount('login')
+  }
+
+  const onInputChange = (e) =>{
+    setSignup({...signup, [e.target.name]: e.target.value});
+  }
+
+  const signupUser = () => {
+    
   }
 
 
@@ -100,6 +116,7 @@ const Login = () => {
             <Button variant="contained" fullWidth color="primary" 
               sx={{ mb: 2 }}
               style={{ fontSize: '16px',backgroundColor:'#001f3f'}}
+              onClick={signupUser}
             >
               Sign Up
             </Button>

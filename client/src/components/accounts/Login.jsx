@@ -3,6 +3,11 @@ import { useState } from 'react';
 import LogoImage from '../Images/image.png';
 import { API } from '../../service/api.js';
 
+const loginInitialValues = {
+  username: '',
+  password: ''
+}
+
 const signupInitialValues = {
   name: '',
   username: '',
@@ -12,6 +17,7 @@ const signupInitialValues = {
 const Login = () => {
   const [account, toggleaccount] = useState('login'); // State for login/signup toggle
   const [signup, setSignup] = useState(signupInitialValues); // State for signup form fields
+  const [login, setLogin] = useState(loginInitialValues); // State for signup form fields
   const [error, setError] = useState('') ; 
   // Toggle between login and signup form
   const toggleSignup = () => {
@@ -23,7 +29,6 @@ const Login = () => {
   };
 
   const signupUser = async () => {
-
     try {
         const response = await API.userSignup(signup);
         console.log('Signup Response:', response);
@@ -38,6 +43,28 @@ const Login = () => {
         console.error('Signup Error:', error);
     }
 };
+
+
+const onValueChange = (e) => {
+  setLogin({...login,[e.target.name]: e.target.value})
+} 
+
+const loginUser = async () => {
+  try {
+      const response = await API.userLogin(login); // API call
+      if (response?.isSuccess) { // Optional chaining to handle undefined response
+          setError(''); // Clear error if successful
+      } else {
+          setError('Something went wrong. Please try again later.'); // Handle unsuccessful login
+      }
+  } catch (error) {
+      // Handle exceptions from API call
+      setError(`Error: ${error.message || 'An unexpected error occurred'}`);
+      console.error("Login Error:", error); // Log detailed error for debugging
+  }
+};
+
+
   return (
     <Box
       sx={{
@@ -60,8 +87,8 @@ const Login = () => {
               variant="standard"
               label="Username"
               name="username"
-              value={signup.username || ''}
-              onChange={(e)=> onInputChange(e)}
+              value={login.username || ''}
+              onChange={(e)=> onValueChange(e)}
               fullWidth
               sx={{ mb: 2 }}
               InputProps={{
@@ -72,8 +99,8 @@ const Login = () => {
               variant="standard"
               label="Password"
               name="password"
-              value={signup.password || ''}
-              onChange={(e)=> onInputChange(e)}
+              value={login.password || ''}
+              onChange={(e)=> onValueChange(e)}
               type="password"
               fullWidth
               sx={{ mb: 4 }}
@@ -87,6 +114,7 @@ const Login = () => {
               color="primary"
               sx={{ mb: 2 }}
               style={{ fontSize: '16px', backgroundColor: '#001f3f' }}
+              onClick={() => loginUser()}
             >
               Login
             </Button>
